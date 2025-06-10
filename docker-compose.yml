@@ -29,11 +29,6 @@ services:
       - "5434:5432"   # pgAdmin access
     networks:
       - grpcnet
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U sub" ]
-      interval: 5s
-      timeout: 3s
-      retries: 5
 
   # 🛒 Cart Service
   cart:
@@ -63,11 +58,7 @@ services:
       - "5435:5432"
     networks:
       - grpcnet
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U sub" ]
-      interval: 5s
-      timeout: 3s
-      retries: 5
+
 
   # 📦 Orders Service
   orders:
@@ -97,11 +88,7 @@ services:
       - "5436:5432"
     networks:
       - grpcnet
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U sub" ]
-      interval: 5s
-      timeout: 3s
-      retries: 5
+
 
   # 🧸 Toys Service
   toys:
@@ -131,11 +118,6 @@ services:
       - "5437:5432"
     networks:
       - grpcnet
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U sub" ]
-      interval: 5s
-      timeout: 3s
-      retries: 5
 
   # 🙋 Subscriptions Service
   subs:
@@ -165,11 +147,7 @@ services:
       - "5438:5432"
     networks:
       - grpcnet
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U sub" ]
-      interval: 5s
-      timeout: 3s
-      retries: 5
+
 
 networks:
   grpcnet:
