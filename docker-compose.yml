@@ -1,0 +1,176 @@
+version: "3.9"
+
+services:
+  # 🧺 Bucket Service
+  bucket:
+    build:
+      context: ./bucket
+    environment:
+      DB_HOST: db_bucket
+      DB_PORT: 5432
+      DB_USER: bucket
+      DB_PASSWORD: pass
+      DB_NAME: buckets
+    depends_on:
+      - db_bucket
+    ports:
+      - "2000:2000"   # gRPC
+      - "2020:2020"   # HTTP
+    networks:
+      - grpcnet
+
+  db_bucket:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: bucket
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: buckets
+    ports:
+      - "5434:5432"   # pgAdmin access
+    networks:
+      - grpcnet
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U sub" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # 🛒 Cart Service
+  cart:
+    build:
+      context: ./cart
+    environment:
+      DB_HOST: db_cart
+      DB_PORT: 5432
+      DB_USER: cart
+      DB_PASSWORD: pass
+      DB_NAME: carts
+    depends_on:
+      - db_cart
+    ports:
+      - "5000:5000"   # gRPC
+      - "8080:8080"   # HTTP
+    networks:
+      - grpcnet
+
+  db_cart:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: cart
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: carts
+    ports:
+      - "5435:5432"
+    networks:
+      - grpcnet
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U sub" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # 📦 Orders Service
+  orders:
+    build:
+      context: ./orders
+    environment:
+      DB_HOST: db_orders
+      DB_PORT: 5432
+      DB_USER: orders
+      DB_PASSWORD: pass
+      DB_NAME: orders
+    depends_on:
+      - db_orders
+    ports:
+      - "4000:4000"   # gRPC
+      - "5050:5050"   # HTTP
+    networks:
+      - grpcnet
+
+  db_orders:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: orders
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: orders
+    ports:
+      - "5436:5432"
+    networks:
+      - grpcnet
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U sub" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # 🧸 Toys Service
+  toys:
+    build:
+      context: ./toys
+    environment:
+      DB_HOST: db_toys
+      DB_PORT: 5432
+      DB_USER: toys
+      DB_PASSWORD: pass
+      DB_NAME: toys
+    depends_on:
+      - db_toys
+    ports:
+      - "9000:9000"   # gRPC
+      - "3030:3030"   # HTTP
+    networks:
+      - grpcnet
+
+  db_toys:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: toys
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: toys
+    ports:
+      - "5437:5432"
+    networks:
+      - grpcnet
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U sub" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # 🙋 Subscriptions Service
+  subs:
+    build:
+      context: ./subs
+    environment:
+      DB_HOST: db_subs
+      DB_PORT: 5432
+      DB_USER: sub
+      DB_PASSWORD: pass
+      DB_NAME: subscriptions
+    depends_on:
+      - db_subs
+    ports:
+      - "3000:3000"   # gRPC
+      - "9090:9090"   # HTTP
+    networks:
+      - grpcnet
+
+  db_subs:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: sub
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: subscriptions
+    ports:
+      - "5438:5432"
+    networks:
+      - grpcnet
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U sub" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+networks:
+  grpcnet:
+    driver: bridge
